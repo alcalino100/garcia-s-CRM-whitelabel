@@ -60,6 +60,7 @@ export const LEGACY_ROLE_MAP: Record<string, RoleType> = {
   corretor: "user",
   corretor_vendas: "user",
   corretor_locacao: "user",
+  leitor: "viewer",
 };
 
 export function legacyToRoleType(legacy: string): RoleType {

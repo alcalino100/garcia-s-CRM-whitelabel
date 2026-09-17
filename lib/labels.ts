@@ -184,6 +184,7 @@ export const ROLE_VARIANT: Record<Role, string> = {
   gestor_vendas: "accent",
   corretor_locacao: "teal",
   gestor_locacao: "indigo",
+  leitor: "gray",
 }
 
 export const ACTION_LABEL: Record<ActionType, string> = { criacao: "Criação", edicao: "Edição", exclusao: "Exclusão" }

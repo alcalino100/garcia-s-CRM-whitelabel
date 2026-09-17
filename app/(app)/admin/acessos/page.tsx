@@ -40,6 +40,7 @@ export default function AcessosPage() {
       if (r === "corretor" || r === "gestor") return temModulo("vendas") && temModulo("locacao")
       if (r === "corretor_vendas" || r === "gestor_vendas") return temModulo("vendas")
       if (r === "corretor_locacao" || r === "gestor_locacao") return temModulo("locacao")
+      if (r === "leitor") return true
       return false
     }),
   })).filter((g) => g.roles.length > 0)

@@ -1,6 +1,6 @@
 import type { Modulo, Role } from "./mock-data"
 
-export type Nivel = "corretor" | "gestor" | "master"
+export type Nivel = "corretor" | "gestor" | "master" | "leitor"
 
 export const ROLE_LIST: Role[] = [
   "corretor",
@@ -10,6 +10,7 @@ export const ROLE_LIST: Role[] = [
   "gestor_vendas",
   "corretor_locacao",
   "gestor_locacao",
+  "leitor",
 ]
 
 export const ROLE_LABEL: Record<Role, string> = {
@@ -20,6 +21,7 @@ export const ROLE_LABEL: Record<Role, string> = {
   gestor_vendas: "Gestor de Vendas",
   corretor_locacao: "Corretor de Locação",
   gestor_locacao: "Gestor de Locação",
+  leitor: "Leitor (somente leitura)",
 }
 
 // Agrupamento para os selects de perfil (Gestão de Acessos / Admin)
@@ -28,16 +30,19 @@ export const ROLE_GROUPS: { label: string; roles: Role[] }[] = [
   { label: "Vendas + Locação", roles: ["corretor", "gestor"] },
   { label: "Somente Vendas", roles: ["corretor_vendas", "gestor_vendas"] },
   { label: "Somente Locação", roles: ["corretor_locacao", "gestor_locacao"] },
+  { label: "Somente leitura", roles: ["leitor"] },
 ]
 
 export function nivelRole(role: Role): Nivel {
   if (role === "gestor_master") return "master"
   if (role === "corretor" || role === "corretor_vendas" || role === "corretor_locacao") return "corretor"
+  if (role === "leitor") return "leitor"
   return "gestor"
 }
 
 export function isGestorNivel(role: Role): boolean {
-  return nivelRole(role) !== "corretor"
+  const n = nivelRole(role)
+  return n === "gestor" || n === "master"
 }
 
 export function isMaster(role: Role): boolean {
@@ -93,6 +98,7 @@ export function podeGerenciar(role: Role, modulo: Modulo): boolean {
 
 // Rota inicial após login
 export function homeDaRole(role: Role): string {
+  if (role === "leitor") return "/relatorios"
   const locacaoSo = podeLocacao(role) && !podeVendas(role)
   if (locacaoSo) return isGestorNivel(role) ? "/locacao/dashboard" : "/locacao"
   return isGestorNivel(role) ? "/dashboard-gestao" : "/painel-corretor"

@@ -6,6 +6,7 @@ export type Role =
   | "gestor_vendas" // somente Vendas (nível gestor)
   | "corretor_locacao" // somente Locação
   | "gestor_locacao" // somente Locação (nível gestor)
+  | "leitor" // somente leitura (relatórios)
 export type Modulo = "vendas" | "locacao"
 export type LeadStatus =
   | "novo"

@@ -25,6 +25,7 @@ export default function PainelCorretorPage() {
 
   if (!user) return null
   if (!podeVendas(user.role)) return null
+  if (user.role === "leitor") return null
   const isGestor = isGestorNivel(user.role)
   const myLeads = isGestor ? leads : leads.filter((l) => l.corretorId === user.id)
 

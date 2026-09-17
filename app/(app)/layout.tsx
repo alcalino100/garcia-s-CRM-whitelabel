@@ -47,6 +47,7 @@ const NAV: { href: string; label: string; icon: any; roles: Role[] }[] = [
   { href: "/meta-ads", label: "Meta Ads", icon: BarChart3, roles: ["gestor"] },
   { href: "/configuracoes/whatsapp", label: "Conexões WhatsApp", icon: MessageCircle, roles: ["gestor"] },
   { href: "/perfil", label: "Meu Perfil", icon: UserCircle, roles: ["corretor", "gestor"] },
+  { href: "/relatorios", label: "Relatórios", icon: BarChart3, roles: ["leitor"] },
 ]
 
 const NAV_LOCACAO: { href: string; label: string; icon: any; roles: Role[] }[] = [
@@ -247,7 +248,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
         )}
         <span className="px-3 text-xs uppercase tracking-wide text-sidebar-foreground/70">
-          {nivel === "master" ? "Gestor Master" : nivel === "gestor" ? "Gestor" : "Corretor"}
+          {nivel === "master" ? "Gestor Master" : nivel === "gestor" ? "Gestor" : nivel === "leitor" ? "Leitor" : "Corretor"}
         </span>
       </div>
     </>
