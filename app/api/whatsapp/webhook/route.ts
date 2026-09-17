@@ -10,7 +10,7 @@ export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 // Mídia (download/transcrição) + debounce + geração Claude + envio podem passar
 // dos 30s padrão — 60s dão folga sem estourar o limite do plano.
-export const maxDuration = 60
+export const maxDuration = 120
 
 // Sempre responde 200 para não interromper o fluxo da Evolution
 const ok = () => NextResponse.json({ received: true })
