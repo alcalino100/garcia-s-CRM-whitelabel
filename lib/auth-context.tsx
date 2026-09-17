@@ -2,6 +2,20 @@
 
 import { createContext, useContext, useEffect, useState } from "react"
 import type { Role, User } from "./mock-data"
+import { SUPABASE_KEY, SUPABASE_URL } from "./supabase/config"
+
+// Corte Auth (progressivo): estabelece também a sessão Supabase (cookies),
+// usada pelo RLS futuro. Best-effort: nunca bloqueia o login legado.
+async function signInSupabase(email: string, senha: string): Promise<void> {
+  try {
+    const { createBrowserClient } = await import("@supabase/ssr")
+    const sb = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL || SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || SUPABASE_KEY,
+    )
+    await sb.auth.signInWithPassword({ email, password: senha })
+  } catch { /* silencioso de propósito */ }
+}
 
 type SessionUser = Omit<User, "senha">
 
@@ -50,12 +64,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     setUser(session)
     localStorage.setItem(KEY, JSON.stringify(session))
+    void signInSupabase(email, senha)
     return { ok: true, role: session.role }
   }
 
   function logout() {
     setUser(null)
     localStorage.removeItem(KEY)
+    try {
+      import("@supabase/ssr").then(async ({ createBrowserClient }) => {
+        const sb = createBrowserClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL || SUPABASE_URL,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || SUPABASE_KEY,
+        )
+        await sb.auth.signOut().catch(() => {})
+      }).catch(() => {})
+    } catch { /* silencioso */ }
   }
 
   return <Ctx.Provider value={{ user, loading, login, logout }}>{children}</Ctx.Provider>

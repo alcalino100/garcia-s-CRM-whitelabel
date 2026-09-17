@@ -3,6 +3,8 @@
 -- Só aplicar APÓS o corte para Supabase Auth (JWT com claim workspace_id),
 -- pois o app atual usa sessões próprias e seria bloqueado pelo RLS.
 -- service_role (server) sempre bypassa; estas policies valem para anon/autenticated.
+-- Claims vêm do app_metadata (gravado no login/espelho). Padrão por tabela:
+--   workspace_id = (auth.jwt() -> 'app_metadata' ->> 'workspace_id')
 -- ============================================================================
 
 do $$
@@ -19,7 +21,7 @@ begin
     execute format('alter table public.%I enable row level security', t);
 
     execute format(
-      'create policy %I isolado em %I on public.%I for all using (workspace_id = (auth.jwt() ->> ''workspace_id'')) with check (workspace_id = (auth.jwt() ->> ''workspace_id''))',
-      'tenant_isolation', t, t);
+      'create policy %I on public.%I for all using (workspace_id = (auth.jwt() -> ''app_metadata'' ->> ''workspace_id'')) with check (workspace_id = (auth.jwt() -> ''app_metadata'' ->> ''workspace_id''))',
+      'tenant_isolation', t);
   end loop;
 end $$;
