@@ -15,7 +15,7 @@ import { brl, fmtDate, fmtDuracao, STATUS_ACCENT, STATUS_LABEL, STATUS_VARIANT }
 import { ORIGENS, type LeadStatus, type Origem } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 
-const COLORS = ["#b22222", "#54595f", "#c41e24", "#a1a1aa", "#d4d4d8", "#e4a11b"]
+const COLORS = ["#18181b", "#52525b", "#71717a", "#a1a1aa", "#d4d4d8", "#e4e4e7"]
 
 // Probabilidade de fechamento por etapa (usada na previsão ponderada do pipeline)
 const PIPELINE_PROB: Record<LeadStatus, number> = {
@@ -266,7 +266,8 @@ export default function DashboardGestaoPage() {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">01 · Hoje</p>
+      <div className="-mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Kpi icon={Users} label="Leads ativos" value={String(kpis.ativos)} />
         <Kpi icon={CalendarCheck} label="Visitas esta semana" value={String(kpis.visitasSemana)} />
         <Kpi icon={TrendingUp} label="Valor em propostas" value={brl(kpis.valorPropostas)} />
@@ -274,7 +275,8 @@ export default function DashboardGestaoPage() {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">02 · Funil e origem</p>
+      <div className="-mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader><CardTitle>Leads por corretor</CardTitle></CardHeader>
           <CardContent>
@@ -457,8 +459,11 @@ export default function DashboardGestaoPage() {
 
       {/* Kanban geral */}
       <div className="min-w-0">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-display text-lg font-semibold">Kanban Geral</h2>
+        <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">03 · Pipeline</p>
+            <h2 className="mt-1 font-display text-2xl font-extrabold tracking-tight sm:text-3xl">Kanban Geral</h2>
+          </div>
         </div>
         <Suspense fallback={<div className="h-[520px] rounded-xl border border-dashed border-border bg-card/40" />}>
           <KanbanBoard leads={leads} showCorretor currentCorretorId={corretores[0]?.id ?? ""} isGestor heightClass="h-[520px]" />
@@ -505,26 +510,17 @@ export default function DashboardGestaoPage() {
 
 function Kpi({ icon: Icon, label, value, accent }: { icon: any; label: string; value: string; accent?: boolean }) {
   return (
-    <div className={cn(
-      "group rounded-xl border border-border bg-card p-px transition-colors duration-150 hover:border-foreground/25",
-      accent && "from-accent/25 via-accent/5",
-    )}>
-      <Card className="h-full rounded-[calc(var(--radius-xl)-1px)]">
-        <CardContent className="flex h-full items-center gap-4 p-4 pt-5">
-          <div className={cn(
-            "flex size-11 shrink-0 items-center justify-center rounded-xl ring-1 transition-all duration-300 group-hover:scale-110 group-hover:-rotate-3",
-            accent
-              ? "bg-accent/10 text-accent ring-accent/25 shadow-[0_0_18px_rgb(196_30_36/0.45)]"
-              : "bg-primary/10 text-primary ring-primary/25 shadow-[0_0_16px_rgb(178_34_34/0.35)]",
-          )}>
-            <Icon className="size-5" />
-          </div>
-          <div className="min-w-0">
-            <p className="truncate text-xs text-muted-foreground">{label}</p>
-            <p className="truncate font-display text-xl font-bold tabular-nums">{value}</p>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="group rounded-xl border border-border bg-card p-5 transition-colors duration-150 hover:border-foreground/30">
+      <div className="flex items-start justify-between gap-3">
+        <p className="font-display text-4xl font-extrabold tracking-tight tabular-nums sm:text-5xl">{value}</p>
+        <div className={cn(
+          "flex size-10 shrink-0 items-center justify-center rounded-lg border border-border bg-muted",
+          accent ? "text-foreground" : "text-muted-foreground",
+        )}>
+          <Icon className="size-5" />
+        </div>
+      </div>
+      <p className="mt-2 truncate text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{label}</p>
     </div>
   )
 }

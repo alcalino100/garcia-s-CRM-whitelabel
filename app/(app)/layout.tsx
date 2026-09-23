@@ -17,6 +17,7 @@ import { PresenceProvider } from "@/lib/presence"
 import { EmergencyPauseButton } from "@/components/automation/EmergencyPauseButton"
 import { ColucciLogo } from "@/components/colucci-logo"
 import { NotificationBell } from "@/components/notification-bell"
+import { CrmTicker } from "@/components/crm-ticker"
 import { DailySummary } from "@/components/daily-summary"
 import { SaleCelebrationProvider } from "@/components/sale-celebration"
 import { cn } from "@/lib/utils"
@@ -300,6 +301,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </button>
             </div>
           </header>
+          <CrmTicker />
 
           <main className="relative min-w-0 flex-1 overflow-x-hidden p-4 lg:p-6">
             <div className="relative z-10">{children}</div>
