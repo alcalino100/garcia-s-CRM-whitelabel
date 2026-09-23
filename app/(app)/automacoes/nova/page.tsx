@@ -139,7 +139,7 @@ export default function NovaAutomacaoPage() {
     msg = msg.replaceAll("{{nome_lead}}", "Maria Silva")
     msg = msg.replaceAll("{{primeiro_nome}}", "Maria")
     msg = msg.replaceAll("{{nome_corretor}}", "João Santos")
-    msg = msg.replaceAll("{{nome_imobiliaria}}", "Colucci Imóveis")
+    msg = msg.replaceAll("{{nome_imobiliaria}}", "Sua Imobiliária")
     msg = msg.replaceAll("{{cidade_lead}}", "Presidente Prudente")
     msg = msg.replaceAll("{{empreendimento_interesse}}", "Residencial Parque")
     msg = msg.replaceAll("{{origem_lead}}", "Tráfego Pago")

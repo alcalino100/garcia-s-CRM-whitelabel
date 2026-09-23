@@ -182,7 +182,7 @@ export function FunilROI({ leads, investimento, loadingMeta }: FunilROIProps) {
                 <Percent className="size-4.5" />
               </div>
               <div>
-                <p className="text-[10px] text-amber-700/70">Comissão Colucci (5%)</p>
+                <p className="text-[10px] text-amber-700/70">Comissão (5%)</p>
                 <p className="font-display text-lg font-bold tabular-nums text-amber-700">{brl(data.comissao)}</p>
               </div>
             </div>

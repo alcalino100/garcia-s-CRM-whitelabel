@@ -302,10 +302,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </header>
 
           <main className="relative min-w-0 flex-1 overflow-x-hidden p-4 lg:p-6">
-            {/* Leve toque de cor de fundo, discreto */}
-            <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-              <div className="absolute -top-32 left-1/2 h-96 w-[40rem] -translate-x-1/2 rounded-full bg-primary/[0.04] blur-3xl" />
-            </div>
             <div className="relative z-10">{children}</div>
           </main>
         </div>

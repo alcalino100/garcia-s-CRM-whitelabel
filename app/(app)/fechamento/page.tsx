@@ -377,7 +377,7 @@ export default function FechamentoPage() {
 function Kpi({ icon: Icon, label, value, accent }: { icon: any; label: string; value: string; accent?: boolean }) {
   return (
     <div className={cn(
-      "group rounded-xl bg-gradient-to-b from-primary/20 via-primary/5 to-transparent p-px transition-all duration-300 hover:-translate-y-1 hover:from-primary/40",
+      "group rounded-xl border border-border bg-card p-px transition-colors duration-150 hover:border-foreground/25",
       accent && "from-accent/25 via-accent/5",
     )}>
       <Card className="h-full rounded-[calc(var(--radius-xl)-1px)]">

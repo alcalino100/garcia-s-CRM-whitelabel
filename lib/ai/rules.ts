@@ -113,7 +113,7 @@ export const sleep = (ms: number) => new Promise(res => setTimeout(res, ms))
 // Nome de apresentação do agente (remove sufixos operacionais como " - Teste").
 export function nomeApresentacao(nome: string | null | undefined): string {
   const base = String(nome || "").split(" - ")[0].trim()
-  return base || "assistente da Colucci Imóveis"
+  return base || "assistente imobiliário"
 }
 
 export function getBoundInstances(config: unknown): string[] {

@@ -34,7 +34,7 @@ export function renderMessage(template: string, ctx: VariableContext): string {
     nome_lead: ctx.lead?.nome ?? "",
     primeiro_nome: primeiroNome,
     nome_corretor: ctx.corretor?.nome ?? "",
-    nome_imobiliaria: ctx.imobiliaria ?? "Colucci Imóveis",
+    nome_imobiliaria: ctx.imobiliaria ?? "nossa imobiliária",
     cidade_lead: ctx.lead?.cidade ?? "",
     empreendimento_interesse: ctx.empreendimento ?? "",
     origem_lead: ctx.lead?.origem ?? "",

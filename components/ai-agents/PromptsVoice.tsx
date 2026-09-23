@@ -16,7 +16,7 @@ export function PromptsVoice({ id }: { id: string }){
 
       <Card className="border-emerald-500/20">
         <CardHeader><CardTitle className="text-sm">System Prompt (principal)</CardTitle><p className="text-xs text-muted-foreground">Quem é a IA, qual seu papel na reativação. Ex: "Você é a assistente da Patrícia..."</p></CardHeader>
-        <CardContent><Textarea rows={8} value={agent.systemPrompt} onChange={e=>update(id,{systemPrompt:e.target.value})} placeholder="Você é a assistente da Patrícia da Colucci Imóveis, especialista em reativação de leads frios de Tráfego Pago. Objetivo: reengajar e agendar visita..." className="font-mono text-sm" /></CardContent>
+        <CardContent><Textarea rows={8} value={agent.systemPrompt} onChange={e=>update(id,{systemPrompt:e.target.value})} placeholder="Você é uma assistente especialista em reativação de leads frios. Objetivo: reengajar e agendar visita..." className="font-mono text-sm" /></CardContent>
       </Card>
 
       <Card>

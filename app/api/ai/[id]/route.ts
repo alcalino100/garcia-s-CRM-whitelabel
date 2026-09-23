@@ -70,7 +70,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{id:st
       data = r.data; error = r.error
     } else {
       // usa dados do mock como base se for um dos agentes conhecidos
-      const mockDefaults: any = id==="ai_patricia_01" ? { name:"Patrícia - Reativação", description:"IA para reativação de base da Patrícia (Tráfego Pago)", bot_template:"vendas", channels:["whatsapp"], response_mode:"auto", wait_time_ms:2000, message_cap:10, is_active:true, system_prompt:"Você é a assistente da Patrícia da Colucci Imóveis, especialista em reativação de leads frios...", additional_instructions:"Sempre ofereça visita, nunca prometa desconto sem autorização.", brand_voice:"Profissional, acolhedora, objetiva" } : { name: body.name || "Novo Agente", bot_template: "vendas", channels: ["whatsapp"], response_mode: "auto", wait_time_ms: 2000, message_cap: 10, is_active: false }
+      const mockDefaults: any = id==="ai_patricia_01" ? { name:"Patrícia - Reativação", description:"IA para reativação de base da Patrícia (Tráfego Pago)", bot_template:"vendas", channels:["whatsapp"], response_mode:"auto", wait_time_ms:2000, message_cap:10, is_active:true, system_prompt:"Você é uma assistente especialista em reativação de leads frios de Tráfego Pago...", additional_instructions:"Sempre ofereça visita, nunca prometa desconto sem autorização.", brand_voice:"Profissional, acolhedora, objetiva" } : { name: body.name || "Novo Agente", bot_template: "vendas", channels: ["whatsapp"], response_mode: "auto", wait_time_ms: 2000, message_cap: 10, is_active: false }
       const row = { id, ...mockDefaults, ...patch }
       const r = await db().from("ai_agents").insert(row).select("*").single()
       data = r.data; error = r.error

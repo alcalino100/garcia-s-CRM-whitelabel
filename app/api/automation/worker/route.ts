@@ -255,6 +255,14 @@ export async function runWorker() {
     }
     const rejectionDetails: { lead_id: string; lead_nome: string; reason: string }[] = []
 
+    // Marca do workspace para {{nome_imobiliaria}} (white-label: nunca fixa no código).
+    let nomeImobiliaria = "nossa imobiliária"
+    try {
+      const { data: ws } = await wsupabase.from("workspace_settings").select("brand_name").eq("id", "main").maybeSingle()
+      const nb = String((ws as { brand_name?: unknown } | null)?.brand_name ?? "").trim()
+      if (nb) nomeImobiliaria = nb
+    } catch { /* fallback neutro */ }
+
     // Follow-up tem gatilho próprio (jobs sem resposta), não o pool bruto de leads.
     const automacoesNormais = automations.filter((a) => a.trigger_type !== "no_response_followup")
     const automacoesFollowup = automations.filter((a) => a.trigger_type === "no_response_followup")
@@ -534,7 +542,7 @@ export async function runWorker() {
         const rendered = renderMessage(template.content, {
           lead: { nome: lead.nome, telefone: lead.telefone, origem: lead.origem },
           corretor: { nome: corretorNome },
-          imobiliaria: "Colucci Imóveis",
+          imobiliaria: nomeImobiliaria,
         })
 
         const connectionId = automation.whatsapp_connection_id

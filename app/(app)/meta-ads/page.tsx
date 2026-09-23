@@ -214,17 +214,14 @@ function MetaAdsDashboard() {
   return (
     <div className="flex flex-col gap-5">
       {/* Cabeçalho */}
-      <header className="shine relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
-        <div aria-hidden className="pointer-events-none absolute -right-24 -top-32 size-80 rounded-full bg-primary/15 blur-3xl" />
-        <div aria-hidden className="pointer-events-none absolute -bottom-28 -left-12 size-64 rounded-full bg-accent/15 blur-3xl" />
-        <div aria-hidden className="pointer-events-none absolute -top-16 right-1/3 size-40 rounded-full bg-secondary/10 blur-3xl" />
-        <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary/15 to-accent/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary ring-1 ring-primary/25 shadow-[0_0_14px_rgb(178_34_34/0.25)]">
-              <Sparkles className="size-3.5" /> Gestão de tráfego
-            </span>
+        <header className="relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
+          <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                <Sparkles className="size-3.5" /> Gestão de tráfego
+              </span>
             <h1 className="mt-2.5 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-              <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">Meta Ads</span>
+              <span className="text-foreground">Meta Ads</span>
             </h1>
             <p className="mt-1 max-w-xl text-sm text-muted-foreground text-pretty">
               Performance das campanhas com dados da Meta Graph API e leads reais do CRM.
@@ -242,7 +239,7 @@ function MetaAdsDashboard() {
               </Badge>
             )}
             {!status?.connected && (
-              <a href="/api/meta/oauth/start" className="shine inline-flex items-center gap-2 rounded-lg bg-gradient-to-b from-primary to-primary/90 px-3.5 py-2 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-6px_rgb(178_34_34/0.5)] transition hover:shadow-[0_12px_30px_-4px_rgb(178_34_34/0.7)] hover:brightness-110">
+              <a href="/api/meta/oauth/start" className="inline-flex items-center gap-2 rounded-lg bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90">
                 <Link2 className="size-4" /> Conectar Meta Business
               </a>
             )}

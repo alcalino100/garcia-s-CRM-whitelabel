@@ -63,7 +63,7 @@ export default function LocacaoLeadDetailPage({ params }: { params: Promise<{ id
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="font-display text-2xl font-bold">
-              <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">{lead.nome}</span>
+              <span className="text-foreground">{lead.nome}</span>
             </h1>
             <Badge variant={LOCACAO_STATUS_VARIANT[lead.status]}>{LOCACAO_STATUS_LABEL[lead.status]}</Badge>
             <Badge variant={TEMP_VARIANT[lead.temperatura]}>{TEMP_LABEL[lead.temperatura]}</Badge>

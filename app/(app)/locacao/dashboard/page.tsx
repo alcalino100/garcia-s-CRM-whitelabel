@@ -344,7 +344,7 @@ export default function LocacaoDashboardPage() {
                   <div key={r.status} className="flex items-center gap-3">
                     <Badge variant={LOCACAO_STATUS_VARIANT[r.status]} className="w-36 shrink-0 justify-start">{LOCACAO_STATUS_LABEL[r.status]}</Badge>
                     <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
-                      <div className="h-full rounded-full bg-gradient-to-r from-primary to-accent" style={{ width: `${r.prob}%` }} />
+                      <div className="h-full rounded-full bg-primary" style={{ width: `${r.prob}%` }} />
                     </div>
                     <span className="w-24 shrink-0 text-right text-xs tabular-nums text-muted-foreground">
                       <span className="font-semibold text-foreground">{brl(r.ponderado)}</span> <span className="text-[10px]">({r.prob}%)</span>
@@ -497,7 +497,7 @@ export default function LocacaoDashboardPage() {
 function Kpi({ icon: Icon, label, value, accent }: { icon: any; label: string; value: string; accent?: boolean }) {
   return (
     <div className={cn(
-      "group rounded-xl bg-gradient-to-b from-primary/20 via-primary/5 to-transparent p-px transition-all duration-300 hover:-translate-y-1 hover:from-primary/40",
+      "group rounded-xl border border-border bg-card p-px transition-colors duration-150 hover:border-foreground/25",
       accent && "from-accent/25 via-accent/5",
     )}>
       <Card className="h-full rounded-[calc(var(--radius-xl)-1px)]">

@@ -9,8 +9,8 @@ function seed(str: string) {
 
 export const MOCK_ACCOUNTS = {
   data: [
-    { id: "act_1000000001", name: "Colucci Imóveis — Principal", currency: "BRL", timezone_name: "America/Sao_Paulo", account_status: 1 },
-    { id: "act_1000000002", name: "Colucci Lançamentos", currency: "BRL", timezone_name: "America/Sao_Paulo", account_status: 1 },
+    { id: "act_1000000001", name: "Conta Principal", currency: "BRL", timezone_name: "America/Sao_Paulo", account_status: 1 },
+    { id: "act_1000000002", name: "Conta Lançamentos", currency: "BRL", timezone_name: "America/Sao_Paulo", account_status: 1 },
   ],
 }
 
@@ -72,7 +72,7 @@ export function mockCreative(creativeId: string) {
     object_type: f,
     call_to_action_type: r() > 0.5 ? "LEARN_MORE" : "WHATSAPP_MESSAGE",
     image_url: `/generic-property-ad.png`,
-    link_description: "Colucci Imóveis — CRECI 12345",
+    link_description: "Imobiliária — CRECI 12345",
   }
 }
 

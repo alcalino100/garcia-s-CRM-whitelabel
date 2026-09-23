@@ -221,7 +221,7 @@ ${adsStr || "(nenhum com dados)"}`
         console.error("GEMINI_API_KEY parece inválida (muito curta)")
       } else {
         try {
-          const sistema = `Você é um analista de Meta Ads da Imobiliária Colucci. Responda EM PORTUGUÊS BRASILEIRO. Seja direto — NÃO cumprimente, NÃO se apresente. Vá direto aos dados e recomendações. Mencione nomes e valores exatos. Não invente dados.`
+          const sistema = `Você é um analista de Meta Ads. Responda EM PORTUGUÊS BRASILEIRO. Seja direto — NÃO cumprimente, NÃO se apresente. Vá direto aos dados e recomendações. Mencione nomes e valores exatos. Não invente dados.`
 
           const gemBody = {
             contents: [

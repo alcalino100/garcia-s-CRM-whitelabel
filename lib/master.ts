@@ -31,7 +31,7 @@ export interface BrandSettings {
 
 export const BRAND_DEFAULTS: BrandSettings = {
   id: "main",
-  brand_name: "Colucci Imóveis",
+  brand_name: "Sua Imobiliária",
   logo_url: null,
   favicon_url: null,
   cor_primaria: "#b22222",

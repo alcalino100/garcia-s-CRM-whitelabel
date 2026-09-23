@@ -53,7 +53,7 @@ export const METODOS_HTTP = ["GET", "POST"]
 export const UNIDADES_TEMPO = ["minutos", "horas", "dias"]
 export const CORRETORES_MOCK = ["Patricia", "Gabriel", "João", "Aline", "Diego", "Levi"]
 export const DEPARTAMENTOS = ["Vendas", "Locação", "Financeiro"]
-export const TEMPLATES_EMAIL = ["Boas-vindas Colucci", "Follow-up de imóvel", "Aniversário do lead"]
+export const TEMPLATES_EMAIL = ["Boas-vindas", "Follow-up de imóvel", "Aniversário do lead"]
 
 // ---------- Campos de configuração ----------
 
@@ -380,7 +380,7 @@ export const VARIAVEIS_PREVIEW: Record<string, string> = {
   "{{nome_lead}}": "Maria Silva",
   "{{primeiro_nome}}": "Maria",
   "{{nome_corretor}}": "João Santos",
-  "{{nome_imobiliaria}}": "Colucci Imóveis",
+  "{{nome_imobiliaria}}": "Sua Imobiliária",
   "{{cidade_lead}}": "Presidente Prudente",
   "{{origem_lead}}": "Tráfego Pago",
   "{{telefone_lead}}": "(18) 99999-0000",

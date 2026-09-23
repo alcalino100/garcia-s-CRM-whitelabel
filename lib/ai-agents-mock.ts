@@ -31,15 +31,15 @@ export const mockAgents: AIAgent[] = [
     waitTimeMs: 2000,
     messageCap: 10,
     isActive: true,
-    systemPrompt: "Você é a assistente da Patrícia da Colucci Imóveis, especialista em reativação de leads frios...",
+    systemPrompt: "Você é uma assistente especialista em reativação de leads frios de Tráfego Pago...",
     additionalInstructions: "Sempre ofereça visita, nunca prometa desconto sem autorização.",
     brandVoice: "Profissional, acolhedora, objetiva",
     goals: [{ id:"g1", name:"Agendar visita", type:"booking", prompt:"Pergunte disponibilidade para visita"}],
-    knowledgeBase: { id:"kb1", name:"Base Colucci", documents: [{id:"d1", name:"tabela_imoveis.pdf", type:"pdf"}] }
+    knowledgeBase: { id:"kb1", name:"Base de imóveis", documents: [{id:"d1", name:"tabela_imoveis.pdf", type:"pdf"}] }
   },
   {
     id: "ai_geral_02",
-    name: "Colucci - Vendas",
+    name: "Agente - Vendas",
     description: "IA geral de vendas",
     botTemplate: "vendas",
     channels: ["whatsapp","site"],

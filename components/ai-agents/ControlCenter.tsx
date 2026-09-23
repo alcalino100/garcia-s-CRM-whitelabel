@@ -394,7 +394,7 @@ export function ControlCenter({ id }: { id: string }) {
               <div className="grid gap-1.5"><Label>Máx. respostas da IA por conversa (0 = ilimitado)</Label><Input type="number" min={0} max={100} value={rules.style.maxMessages} onChange={e=>setRules({...rules, style:{...rules.style, maxMessages: Number(e.target.value)||0}})} /></div>
               <div className="grid gap-1.5 md:col-span-2">
                 <Label>Saudação padrão (1ª mensagem — <code>{"{nome_ia}"}</code> é substituído)</Label>
-                <Input value={rules.style.saudacaoDefault} onChange={e=>setRules({...rules, style:{...rules.style, saudacaoDefault: e.target.value}})} placeholder="Olá! Sou {nome_ia}, da Colucci Imóveis. Como posso ajudar?" />
+                <Input value={rules.style.saudacaoDefault} onChange={e=>setRules({...rules, style:{...rules.style, saudacaoDefault: e.target.value}})} placeholder="Olá! Sou {nome_ia}. Como posso ajudar?" />
               </div>
               <div className="grid gap-1.5 md:col-span-2">
                 <label className="flex items-center gap-2 text-sm">

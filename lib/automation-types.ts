@@ -338,7 +338,7 @@ export const MESSAGE_VARIABLES: { key: string; label: string; example: string }[
   { key: "nome_lead", label: "Nome completo do lead", example: "Maria Silva" },
   { key: "primeiro_nome", label: "Primeiro nome", example: "Maria" },
   { key: "nome_corretor", label: "Nome do corretor", example: "João Santos" },
-  { key: "nome_imobiliaria", label: "Nome da imobiliária", example: "Colucci Imóveis" },
+  { key: "nome_imobiliaria", label: "Nome da imobiliária", example: "Sua Imobiliária" },
   { key: "cidade_lead", label: "Cidade do lead", example: "Presidente Prudente" },
   { key: "empreendimento_interesse", label: "Empreendimento de interesse", example: "Residencial Parque" },
   { key: "origem_lead", label: "Origem do lead", example: "Tráfego Pago" },
