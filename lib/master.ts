@@ -37,9 +37,9 @@ export const BRAND_DEFAULTS: BrandSettings = {
   cor_primaria: "#b22222",
   fonte_titulo: "Space Grotesk",
   fonte_texto: "Inter",
-  sidebar_bg: "#54595f",
-  sidebar_fg: "#d4d4d8",
-  sidebar_accent: "#45494e",
+  sidebar_bg: "#0a0a0a",
+  sidebar_fg: "#fafafa",
+  sidebar_accent: "#262626",
   links: { site: "", instagram: "", suporte: "" },
 }
 

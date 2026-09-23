@@ -14,7 +14,7 @@ export default async function LoginPage() {
         <div className="absolute bottom-[-6rem] left-1/4 h-72 w-72 rounded-full bg-accent/30 blur-3xl" />
         <div className="absolute right-[-4rem] top-1/2 h-64 w-64 rounded-full bg-white/5 blur-3xl" />
       </div>
-      <div className="shine relative w-full max-w-md rounded-2xl bg-card p-8 shadow-[0_24px_60px_-12px_rgb(0_0_0/0.4)]">
+      <div className="relative w-full max-w-md rounded-2xl border-2 border-foreground bg-card p-8 shadow-[8px_8px_0_0_rgb(0_0_0/0.85)]">
         <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent" />
         <div className="mb-8 flex flex-col items-center text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}

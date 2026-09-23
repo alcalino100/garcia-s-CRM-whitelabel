@@ -21,7 +21,7 @@ export function PageHeading({
           {badge}
         </span>
       )}
-      <h1 className={cn("font-display text-2xl font-bold tracking-tight sm:text-3xl", badge && "mt-2.5")}>
+      <h1 className={cn("font-display text-3xl font-extrabold tracking-tight sm:text-4xl", badge && "mt-2.5")}>
         <span className="text-foreground">{title}</span>
       </h1>
       {subtitle && <p className="mt-1 max-w-xl text-sm text-muted-foreground text-pretty">{subtitle}</p>}
