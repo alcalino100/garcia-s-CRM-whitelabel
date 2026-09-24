@@ -4,6 +4,7 @@
     { "path": "/api/automation/regressao-inatividade", "schedule": "30 10 * * *" },
     { "path": "/api/automation/worker", "schedule": "*/30 * * * *" },
     { "path": "/api/automation/resumo-diario", "schedule": "0 21 * * 1-5" },
+    { "path": "/api/automation/followup-ia-parada", "schedule": "0 13 * * *" },
     { "path": "/api/archive-leads", "schedule": "30 3 1 * *" }
   ]
 }
