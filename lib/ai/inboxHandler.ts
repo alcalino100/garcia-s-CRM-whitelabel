@@ -4,6 +4,39 @@ import { generateAIResponse } from "./generateResponse"
 import { normalizePhone } from "@/lib/labels"
 import { sendWhatsAppText } from "@/lib/whatsapp/server"
 import { getBoundInstances, getRules, dentroDoHorario, leadAptoParaResposta, nomeApresentacao, regrasParaPrompt, sleep, type AgentRules } from "./rules"
+import { consultarDisponibilidade, agendarOuRemarcar } from "./agenda-tools"
+
+// Tools de agenda expostas à IA (quando rules.coordination.agendarVisitas).
+const AGENDA_TOOLS = [
+  {
+    name: "consultar_disponibilidade",
+    description: "Consulta os horários livres da agenda (blocos de 30min, seg–sex 08–18h). Chame SEMPRE antes de sugerir data/horário. Retorna dias (AAAA-MM-DD) com horários livres.",
+    input_schema: { type: "object", properties: { dias: { type: "number", description: "Quantos dias úteis à frente (1-10, padrão 5)" } } },
+  },
+  {
+    name: "agendar_reuniao",
+    description: "Marca a reunião (ou REMARCA se o lead já tiver visita futura — nunca duplica). Chame somente após o lead confirmar dia e horário. Data em AAAA-MM-DD, horário HH:MM.",
+    input_schema: {
+      type: "object",
+      properties: {
+        data: { type: "string", description: "Data em AAAA-MM-DD" },
+        horario: { type: "string", description: "Horário HH:MM (ex.: 09:30)" },
+      },
+      required: ["data", "horario"],
+    },
+  },
+]
+
+function suplementoAgendaHoje(): string {
+  const agora = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })
+  return [
+    `[AGENDAMENTO — leia com atenção] Hoje é ${agora} (America/Sao_Paulo).`,
+    "Você agenda reuniões de qualificação (30min, seg–sex 08–18h).",
+    "REGRA DE OURO: NUNCA invente data/horário. SEMPRE chame consultar_disponibilidade antes de sugerir, ofereça 2-3 opções reais, e SÓ chame agendar_reuniao depois que o lead confirmar dia e horário.",
+    "Se o lead pedir outra data/horário, consulte de novo e, ao confirmar, chame agendar_reuniao (ela remarca sozinha se já houver visita — avise isso ao lead).",
+    "Após agendar, confirme data/hora por extenso na resposta.",
+  ].join("\n")
+}
 
 function db(){ return createClient(SUPABASE_URL, SUPABASE_KEY) }
 const normalize = (v: string) => (v || "").toLowerCase().trim()
@@ -381,12 +414,34 @@ async function responderConversaIa({ convId, AI_ID, agenteNome, rules, leadIdEfe
 
     if (rules.style.waitMs > 0) await sleep(Math.min(rules.style.waitMs, 15000))
     const metas = await metasAtivasParaPrompt(AI_ID)
-    const suplemento = [regrasParaPrompt(rules, nomeApresentacao(agenteNome)), metas].filter(Boolean).join("\n\n")
+    const partesSuplemento = [regrasParaPrompt(rules, nomeApresentacao(agenteNome)), metas]
+    // Agenda (opt-in por agente): tools + instrução de consulta antes de propor.
+    const usarAgenda = rules.coordination.agendarVisitas && !!leadIdEfetivo
+    if (usarAgenda) partesSuplemento.push(suplementoAgendaHoje())
+    const suplemento = partesSuplemento.filter(Boolean).join("\n\n")
+    const onToolUseAgenda = async (name: string, input: Record<string, unknown>): Promise<string> => {
+      if (name === "consultar_disponibilidade") {
+        const dias = Math.min(Math.max(Number(input.dias ?? 5) || 5, 1), 10)
+        const disp = await consultarDisponibilidade(dias)
+        if (!disp.length) return "Sem horários livres nos próximos dias úteis."
+        return disp.map((d) => `${d.dia}: ${d.livres.join(", ")}`).join("\n")
+      }
+      if (name === "agendar_reuniao") {
+        const r = await agendarOuRemarcar({
+          leadId: leadIdEfetivo as string,
+          data: String(input.data ?? ""),
+          horario: String(input.horario ?? ""),
+        })
+        return r.ok ? `Visita ${r.acao} para ${String(input.data)} às ${String(input.horario)}. Etapa atualizada para visita agendada.` : `Falha ao agendar: ${r.erro}`
+      }
+      return `Ferramenta desconhecida: ${name}`
+    }
     const { message: aiResp, tokensUsed, model } = await generateAIResponse({
       aiId: AI_ID,
       userMessage,
       conversationHistory: (history || []).map((m: any) => ({ role: m.role, content: m.content })),
       regrasSuplementares: suplemento,
+      ...(usarAgenda ? { tools: AGENDA_TOOLS, onToolUse: onToolUseAgenda } : {}),
     })
     await db().from("messages_ia").insert({ id: `msg_${Date.now() + 1}`, conversation_id: convId, role: "ai", content: aiResp })
 

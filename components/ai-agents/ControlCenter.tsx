@@ -29,7 +29,7 @@ const DEFAULTS: AgentRules = {
   schedule: { enabled: true, days: [1,2,3,4,5,6], start: "08:00", end: "19:00", timezone: "America/Sao_Paulo" },
   target: { origensPermitidas: ["Tráfego Pago"], tags: [], tagsModo: "none", numeroTeste: [], statusBloqueados: ["perdido","escalated"] },
   style: { maxLines: 2, maxQuestions: 1, emojis: "poucos", tom: "acolhedor, claro e direto", proativarReativacao: true, saudacaoDefault: "", responseMode: "auto", waitMs: 0, maxMessages: 0 },
-  coordination: { paraleloComAutomacao: false, pausarPorInatividade: false, tempoInatividadeMin: 30 },
+  coordination: { paraleloComAutomacao: false, pausarPorInatividade: false, tempoInatividadeMin: 30, agendarVisitas: false },
   channels: ["whatsapp"],
   whitelistInstances: [],
 }
@@ -355,6 +355,13 @@ export function ControlCenter({ id }: { id: string }) {
               <div className="grid gap-1.5 max-w-48">
                 <Label>Tempo de inatividade (minutos)</Label>
                 <Input type="number" min={1} max={1440} value={rules.coordination.tempoInatividadeMin} onChange={e=>setRules({...rules, coordination:{...rules.coordination, tempoInatividadeMin: Number(e.target.value)||30}})} />
+              </div>
+              <div className="flex items-center justify-between gap-4 rounded-lg border border-border p-3">
+                <div>
+                  <p className="text-sm font-semibold">IA agenda visitas</p>
+                  <p className="text-xs text-muted-foreground">Ligado: a IA consulta a agenda (30min, seg–sex 08–18h), propõe horários reais e marca/remarca a visita no CRM (sem duplicar), movendo o lead para visita agendada.</p>
+                </div>
+                <button onClick={()=>setRules({...rules, coordination:{...rules.coordination, agendarVisitas: !rules.coordination.agendarVisitas}})} className={cn("relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition", rules.coordination.agendarVisitas ? "bg-cyan-500" : "bg-slate-300")}><span className={cn("absolute size-4 rounded-full bg-white transition", rules.coordination.agendarVisitas ? "left-6" : "left-1")} /></button>
               </div>
             </CardContent>
           </Card>

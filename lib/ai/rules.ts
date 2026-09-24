@@ -43,6 +43,9 @@ export type RulesCoordination = {
   // (ai_responding=false) e libera o lead de volta para a automação.
   pausarPorInatividade: boolean
   tempoInatividadeMin: number
+  // Agenda: a IA pode consultar disponibilidade e marcar/reagendar visitas
+  // (30min, seg–sex 08–18h) via tools. Default false = comportamento atual.
+  agendarVisitas: boolean
 }
 
 export type AgentRules = {
@@ -102,6 +105,7 @@ export function getRules(config: unknown, fallback?: { wait_time_ms?: number | n
       paraleloComAutomacao: coordination?.paraleloComAutomacao === true,
       pausarPorInatividade: coordination?.pausarPorInatividade === true,
       tempoInatividadeMin: typeof coordination?.tempoInatividadeMin === "number" && coordination.tempoInatividadeMin > 0 ? coordination.tempoInatividadeMin : 30,
+      agendarVisitas: coordination?.agendarVisitas === true,
     },
     channels: Array.isArray(r?.channels) ? r.channels : ["whatsapp"],
     whitelistInstances: Array.isArray(r?.whitelistInstances) ? r.whitelistInstances : [],

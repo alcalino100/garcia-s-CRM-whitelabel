@@ -5,11 +5,21 @@ import OpenAI from "openai"
 
 function db(){ return createClient(SUPABASE_URL, SUPABASE_KEY) }
 
+export type AITool = {
+  name: string
+  description: string
+  input_schema: Record<string, unknown>
+}
+
 type Input = {
   aiId: string
   userMessage: string
   conversationHistory: { role:string; content:string }[]
   regrasSuplementares?: string
+  // Tools (function calling) — usado hoje pelo Claude (agenda). Demais
+  // provedores ignoram. onToolUse executa e devolve texto para o modelo.
+  tools?: AITool[]
+  onToolUse?: (name: string, input: Record<string, unknown>) => Promise<string>
 }
 
 export function providerFromModel(model?: string){
@@ -19,7 +29,7 @@ export function providerFromModel(model?: string){
   return "openai"
 }
 
-export async function generateAIResponse({ aiId, userMessage, conversationHistory, regrasSuplementares }: Input){
+export async function generateAIResponse({ aiId, userMessage, conversationHistory, regrasSuplementares, tools, onToolUse }: Input){
   const { data: ai } = await db().from("ai_agents").select("*").eq("id", aiId).single()
   if(!ai) throw new Error("AI not found")
 
@@ -113,30 +123,60 @@ export async function generateAIResponse({ aiId, userMessage, conversationHistor
   }
 
   // Claude - modelos atuais: sonnet-5, haiku-4-5, opus-5, fable-5-1
+  // Com tools: loop tool_use (máx 3 rodadas) — ex.: agenda de visitas.
   if(provider==="claude"){
     const tryModels = Array.from(new Set([model, "claude-sonnet-5", "claude-haiku-4-5", "claude-opus-5", "claude-fable-5-1"]))
     let lastErr=""
     for(const m of tryModels){
       const url = "https://api.anthropic.com/v1/messages"
       const historyForClaude = conversationHistory.map(mm=> ({ role: (mm.role==="ai" ? "assistant" : mm.role) as "user"|"assistant", content: mm.content }))
-      const r = await fetch(url, {
-        method:"POST",
-        headers:{ "Content-Type":"application/json", "x-api-key": apiKey, "anthropic-version":"2023-06-01" },
-        body: JSON.stringify({
-          model: m,
-          max_tokens: 500,
-          system: systemPrompt,
-          messages: [...historyForClaude, { role:"user", content: userMessage }]
-        })
-      })
-      const j = await r.json()
-      if(r.ok){
-        const text = j.content?.[0]?.text || ""
-        return { message: text, tokensUsed: (j.usage?.input_tokens||0) + (j.usage?.output_tokens||0), model: m }
+      const msgs: { role: "user"|"assistant"; content: unknown }[] = [...historyForClaude, { role:"user", content: userMessage }]
+      let totalTokens = 0
+      let usedModel = m
+      try {
+        for (let round = 0; round < 4; round++) {
+          const body: Record<string, unknown> = {
+            model: m,
+            max_tokens: 500,
+            system: systemPrompt,
+            messages: msgs,
+          }
+          if (tools?.length) body.tools = tools
+          const r = await fetch(url, {
+            method:"POST",
+            headers:{ "Content-Type":"application/json", "x-api-key": apiKey, "anthropic-version":"2023-06-01" },
+            body: JSON.stringify(body)
+          })
+          const j = await r.json()
+          if(!r.ok) throw new Error(j.error?.message || "Claude falhou")
+          totalTokens += (j.usage?.input_tokens||0) + (j.usage?.output_tokens||0)
+          usedModel = m
+          const blocks = (j.content ?? []) as { type: string; text?: string; id?: string; name?: string; input?: Record<string, unknown> }[]
+          const toolCalls = blocks.filter((b) => b.type === "tool_use")
+          if (!toolCalls.length || !onToolUse) {
+            const text = blocks.filter((b) => b.type === "text").map((b) => b.text ?? "").join("").trim()
+            return { message: text, tokensUsed: totalTokens, model: usedModel }
+          }
+          // Executa as tools e devolve os resultados para a próxima rodada.
+          const results: { type: string; tool_use_id: string; content: string }[] = []
+          for (const t of toolCalls) {
+            let out: string
+            try {
+              out = await onToolUse(t.name ?? "", t.input ?? {})
+            } catch (e) {
+              out = `Erro na ferramenta ${t.name}: ${e instanceof Error ? e.message : String(e)}`
+            }
+            results.push({ type: "tool_result", tool_use_id: t.id ?? "", content: out.slice(0, 2000) })
+          }
+          msgs.push({ role: "assistant", content: blocks })
+          msgs.push({ role: "user", content: results })
+        }
+        return { message: "", tokensUsed: totalTokens, model: usedModel }
+      } catch (e) {
+        lastErr = e instanceof Error ? e.message : String(e)
+        const isModelErr = lastErr.toLowerCase().includes("not found") || lastErr.toLowerCase().includes("model")
+        if(!isModelErr) break
       }
-      lastErr = j.error?.message || "Claude falhou"
-      const isModelErr = String(lastErr).toLowerCase().includes("not found") || String(lastErr).toLowerCase().includes("model")
-      if(!isModelErr) break
     }
     throw new Error(lastErr)
   }
