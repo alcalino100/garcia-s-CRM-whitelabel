@@ -4,7 +4,7 @@ import { baixarEArmazenarMidia, detectarMidia, mapConnectionState, notifyDisconn
 import { registrarRespostaDeLead, registrarStatusEntrega } from "@/lib/automation-services"
 import { enviarLeadCapi } from "@/lib/meta/capi"
 import { TELEFONES_BLOQUEADOS, isTelefoneBloqueado as isBlockedCentral } from "@/lib/telefones-bloqueados"
-import { agenteParaInstancia, handlePatriciaInbound, isNumeroTesteIA, pausarIaMensagemManual } from "@/lib/ai/inboxHandler"
+import { agenteParaInstancia, handlePatriciaInbound, isNumeroTesteIA, pausarIaMensagemManual, saudarLeadCTWA } from "@/lib/ai/inboxHandler"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -713,8 +713,13 @@ async function handleMessageUpsert(payload: any) {
 
   // IA: dispara resposta automática (Patrícia ou Guilherme - teste). Aguardado pelo
   // mesmo motivo acima (nada de void): sem await, a resposta pode morrer sem rastro.
+  // Sem texto (só clique): saudação proativa em vez de silêncio.
   if (!msg?.key?.fromMe) {
-    await handlePatriciaInbound({ telefone, texto: corpo, leadId: leadId || leadIdExistente || undefined, instanceName, mensagemId: mensagemId || undefined }).catch(() => {})
+    if (!corpo.trim()) {
+      await saudarLeadCTWA({ telefone, leadId: leadId || leadIdExistente || undefined, instanceName }).catch(() => {})
+    } else {
+      await handlePatriciaInbound({ telefone, texto: corpo, leadId: leadId || leadIdExistente || undefined, instanceName, mensagemId: mensagemId || undefined }).catch(() => {})
+    }
   }
 }
 

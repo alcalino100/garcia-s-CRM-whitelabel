@@ -201,6 +201,27 @@ export async function resolveNotifyTarget(): Promise<NotifyTarget | null> {
   return { instanceName, numero, grupo }
 }
 
+// Presença "digitando..." (velocidade percebida). Best-effort: nunca derruba.
+// Evolution v2: POST /chat/sendPresence/{instance} { number, presence, delay }.
+export async function sendPresence(instanceName: string, telefone: string, presence: "composing" | "recording" | "paused" = "composing"): Promise<void> {
+  try {
+    const cfg = evolutionConfig()
+    if (!cfg.ok || !instanceName || !telefone) return
+    const ctrl = new AbortController()
+    const t = setTimeout(() => ctrl.abort(), 4000)
+    try {
+      await fetch(`${cfg.url}/chat/sendPresence/${encodeURIComponent(instanceName)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: cfg.key },
+        body: JSON.stringify({ number: onlyDigits(telefone), presence, delay: 3000 }),
+        signal: ctrl.signal,
+      }).catch(() => null)
+    } finally {
+      clearTimeout(t)
+    }
+  } catch { /* silencioso de propósito */ }
+}
+
 // Envia um texto pela Evolution. number aceita telefone (só dígitos) ou JID de grupo (@g.us).
 export async function sendWhatsAppText(instanceName: string, number: string, text: string): Promise<{ ok: boolean; erro?: string; keyId?: string }> {
   const cfg = evolutionConfig()
