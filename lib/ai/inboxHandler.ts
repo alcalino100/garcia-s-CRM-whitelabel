@@ -35,6 +35,7 @@ function suplementoAgendaHoje(): string {
     "REGRA DE OURO: NUNCA invente data/horário. SEMPRE chame consultar_disponibilidade antes de sugerir, ofereça 2-3 opções reais, e SÓ chame agendar_reuniao depois que o lead confirmar dia e horário.",
     "Se o lead pedir outra data/horário, consulte de novo e, ao confirmar, chame agendar_reuniao (ela remarca sozinha se já houver visita — avise isso ao lead).",
     "Após agendar, confirme data/hora por extenso na resposta.",
+    "NUNCA prometa link de reunião (não há integração de agenda externa): confirme dia e data por extenso e diga que os detalhes chegam por aqui.",
   ].join("\n")
 }
 
