@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth-context"
 import { supabase } from "@/lib/supabase/client"
 import { BRAND_DEFAULTS, FONTES_TEXTO, FONTES_TITULO, applyBrand, isMasterEmail, loadBrand, saveBrand, type BrandSettings } from "@/lib/master"
 import { LEAD_STATUSES, TAGS_FLUXO } from "@/lib/labels"
-import { listStages, saveStage, type StageRow } from "@/lib/pipeline-stages"
+import { listStages, saveStage, createStage, renameStageKey, SYSTEM_STAGE_KEYS, type StageRow } from "@/lib/pipeline-stages"
 import { createWorkspace, listWorkspaces, type Workspace } from "@/lib/tenant"
 import { ROLE_LABEL } from "@/lib/roles"
 import type { Role } from "@/lib/mock-data"
@@ -437,6 +437,8 @@ function PipelinesSection() {
   const [faltaTabela, setFaltaTabela] = useState(false)
   const [counts, setCounts] = useState<Record<string, number>>({})
   const [saving, setSaving] = useState<string | null>(null)
+  const [novaEtapa, setNovaEtapa] = useState("")
+  const [novaChave, setNovaChave] = useState<Record<string, string>>({})
 
   const carregar = async () => {
     const r = await listStages()
@@ -474,7 +476,17 @@ function PipelinesSection() {
             Rode <code>scripts/027_pipeline_stages.sql</code> no Supabase e recarregue. Sem a tabela, valem os valores do código.
           </p>
         )}
-        <p className="mb-2 text-xs text-muted-foreground">Chaves nunca mudam (automações dependem delas). Salvar recarrega para aplicar em todas as telas.</p>
+        <p className="mb-2 text-xs text-muted-foreground">Etapas de sistema têm a chave travada (automações dependem delas) — rótulo/cor/ordem liberados. Etapas custom valem como vitrine (kanban/filtros).</p>
+        <div className="mb-2 flex flex-wrap gap-2">
+          <Input placeholder="Nova etapa (ex.: Pós-venda)" value={novaEtapa} onChange={(e) => setNovaEtapa(e.target.value)} className="h-8 max-w-56 text-xs" />
+          <button type="button" className={btn(true)} onClick={async () => {
+            if (!novaEtapa.trim()) { toast("Dê um nome.", "error"); return }
+            const r = await createStage(novaEtapa.trim())
+            if (!r.ok) { toast(`Falha: ${r.erro}`, "error"); return }
+            toast(`Etapa criada.`)
+            setNovaEtapa(""); carregar()
+          }}>Criar etapa</button>
+        </div>
         <div className="flex flex-col gap-2">
           {rows.map((r) => {
             const open = aberta === r.key
@@ -501,6 +513,22 @@ function PipelinesSection() {
                   <div className="grid gap-2 border-t border-border p-3 sm:grid-cols-2">
                     <div className="grid gap-1.5"><Label>Rótulo</Label>
                       <Input value={r.label} onChange={(e) => set(r.key, { label: e.target.value })} className="h-8 text-xs" /></div>
+                    <div className="grid gap-1.5"><Label>Chave {SYSTEM_STAGE_KEYS.has(r.key) ? "(sistema: travada)" : "(muda etapa + leads)"}</Label>
+                      {SYSTEM_STAGE_KEYS.has(r.key) ? (
+                        <span className="font-mono text-[11px] text-muted-foreground">{r.key} 🔒</span>
+                      ) : (
+                        <div className="flex gap-1">
+                          <Input value={novaChave[r.key] ?? r.key} onChange={(e) => setNovaChave({ ...novaChave, [r.key]: e.target.value })} className="h-8 font-mono text-xs" />
+                          <button type="button" className={btn()} onClick={async () => {
+                            const nk = (novaChave[r.key] ?? "").trim()
+                            if (!nk || nk === r.key) return
+                            const res = await renameStageKey(r.key, nk)
+                            if (!res.ok) { toast(`Falha: ${res.erro}`, "error"); return }
+                            toast("Chave renomeada — recarregando.")
+                            setTimeout(() => window.location.reload(), 800)
+                          }}>Mudar</button>
+                        </div>
+                      )}</div>
                     <div className="grid gap-1.5"><Label>Ordem</Label>
                       <Input type="number" value={r.ordem} onChange={(e) => set(r.key, { ordem: Number(e.target.value) })} className="h-8 text-xs" /></div>
                     <div className="grid gap-1.5"><Label>Cor</Label>

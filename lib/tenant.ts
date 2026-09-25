@@ -5,6 +5,37 @@ import { supabase } from "@/lib/supabase/client"
 // Fase A só RESOLVE (sem enforcement nas queries — Fase B).
 export const MAIN_WORKSPACE = "main";
 
+let cachedSlug: string | null = null;
+
+// Conta ativa no navegador (memoizado). Seguro em SSR (default main).
+export function getActiveWorkspaceSlug(): string {
+  if (cachedSlug) return cachedSlug;
+  if (typeof window === "undefined") return MAIN_WORKSPACE;
+  cachedSlug = resolveWorkspaceSlug(window.location.host, window.location.search);
+  return cachedSlug;
+}
+
+// Troca explícita de conta (?w=slug) — recarrega.
+export function switchWorkspace(slug: string): void {
+  if (typeof window === "undefined") return;
+  cachedSlug = null;
+  const url = new URL(window.location.href);
+  if (slug === MAIN_WORKSPACE) url.searchParams.delete("w");
+  else url.searchParams.set("w", slug);
+  window.location.href = url.toString();
+}
+
+export async function setWorkspaceActive(id: string, active: boolean): Promise<{ ok: boolean; erro?: string }> {
+  try {
+    const { supabase } = await import("@/lib/supabase/client");
+    const { error } = await supabase.from("workspaces").update({ active }).eq("id", id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, erro: e instanceof Error ? e.message : String(e) };
+  }
+}
+
 export function resolveWorkspaceSlug(host?: string, search?: string): string {
   try {
     if (search) {
