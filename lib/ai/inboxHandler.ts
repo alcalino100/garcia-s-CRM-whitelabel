@@ -449,6 +449,27 @@ async function responderConversaIa({ convId, AI_ID, agenteNome, rules, leadIdEfe
     if (!instanceName) return { ok: false, erro: "Instância não informada." }
     const envRes = await sendWhatsAppText(instanceName, telefone, aiResp)
 
+    // Degrau da pipeline: IA enviou = IA assumiu. Lead em novo/em_atendimento
+    // vai para atendimento_ia (dono agora é a IA; gestor vê, corretor não).
+    // Exceção: instâncias 100% manuais (ex.: Brayon) — nunca move sozinho.
+    if (envRes.ok && leadIdEfetivo && !MANUAL_PIPELINE_INSTANCES.has(instanceName || "")) {
+      try {
+        const { data: movidos } = await db().from("leads")
+          .update({ status: "atendimento_ia", atualizado_em: new Date().toISOString() })
+          .eq("id", leadIdEfetivo)
+          .in("status", ["novo", "em_atendimento"])
+          .select("id")
+        if ((movidos ?? []).length) {
+          await db().from("automation_logs").insert({
+            lead_id: leadIdEfetivo,
+            event_type: "ia_assumiu_atendimento",
+            event_title: "IA assumiu — foi para Atendimento IA",
+            event_description: "Conversa assumida pela IA após resposta enviada.",
+            actor_type: "ia",
+          })
+        }
+      } catch { /* best-effort */ }
+    }
     // Reflete a resposta no Inbox imediatamente (o gestor vê na hora; o eco fromMe da
     // Evolution apenas confirma a entrega e NÃO duplica graças ao key_id).
     if (envRes.ok) {
