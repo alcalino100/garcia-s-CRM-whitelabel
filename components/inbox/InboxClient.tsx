@@ -20,6 +20,15 @@ function InstanceSelector(){
     fetch("/api/whatsapp/instancias").then(r=>r.json()).then(j=>{
       const data = (j.data || []).filter((x:any)=> x.status==="conectado")
       setLista(data)
+      // Auto-cura: seleção salva/default pode apontar para instância desconectada
+      // (ex.: caiu na sexta) — nesse caso a lista vinha sempre vazia. Corrige
+      // para a primeira conectada em vez de consultar instância morta.
+      try {
+        const atual = localStorage.getItem("inbox-instancia") || instancia
+        if (data.length && !data.some((x:any)=> x.instance_name===atual)) {
+          setInstancia(data[0].instance_name)
+        }
+      } catch {}
     }).catch(()=>{})
   },[])
   if(lista.length===0) return <span className="text-slate-500">{instancia}</span>
