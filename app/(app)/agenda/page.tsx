@@ -87,7 +87,7 @@ export default function AgendaPage() {
       return
     }
     addVisit({ leadId: lead.id, data, hora, corretorId: lead.corretorId, imovelRef: refs.trim(), referencias: refs.trim(), observacoes: obs })
-    updateLead(lead.id, { status: "visita agendada" })
+    updateLead(lead.id, { status: "reuniao agendada" })
     addInteraction(lead.id, { corretor: userName(lead.corretorId), texto: `Visita agendada via agenda para ${data.split("-").reverse().join("/")} às ${hora}.` })
     toast("Visita agendada. Status do lead atualizado.")
     setSelected(data)
@@ -182,7 +182,7 @@ export default function AgendaPage() {
             {dayVisits.length === 0 ? (
               <div className="flex flex-col items-center gap-2 py-10 text-center">
                 <div className="flex size-11 items-center justify-center rounded-full bg-muted text-muted-foreground"><CalendarDays className="size-5" /></div>
-                <p className="text-sm text-muted-foreground">Nenhuma visita agendada para este dia</p>
+                <p className="text-sm text-muted-foreground">Nenhuma reunião agendada para este dia</p>
               </div>
             ) : (
               <div className="flex flex-col gap-3">

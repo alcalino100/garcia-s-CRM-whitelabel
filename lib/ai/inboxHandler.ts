@@ -433,7 +433,7 @@ async function responderConversaIa({ convId, AI_ID, agenteNome, rules, leadIdEfe
           data: String(input.data ?? ""),
           horario: String(input.horario ?? ""),
         })
-        return r.ok ? `Visita ${r.acao} para ${String(input.data)} às ${String(input.horario)}. Etapa atualizada para visita agendada.` : `Falha ao agendar: ${r.erro}`
+        return r.ok ? `Visita ${r.acao} para ${String(input.data)} às ${String(input.horario)}. Etapa atualizada para reunião agendada.` : `Falha ao agendar: ${r.erro}`
       }
       return `Ferramenta desconhecida: ${name}`
     }

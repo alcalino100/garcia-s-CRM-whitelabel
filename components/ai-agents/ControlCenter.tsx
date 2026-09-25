@@ -359,7 +359,7 @@ export function ControlCenter({ id }: { id: string }) {
               <div className="flex items-center justify-between gap-4 rounded-lg border border-border p-3">
                 <div>
                   <p className="text-sm font-semibold">IA agenda visitas</p>
-                  <p className="text-xs text-muted-foreground">Ligado: a IA consulta a agenda (30min, seg–sex 08–18h), propõe horários reais e marca/remarca a visita no CRM (sem duplicar), movendo o lead para visita agendada.</p>
+                  <p className="text-xs text-muted-foreground">Ligado: a IA consulta a agenda (30min, seg–sex 08–18h), propõe horários reais e marca/remarca a reunião no CRM (sem duplicar), movendo o lead para reunião agendada.</p>
                 </div>
                 <button onClick={()=>setRules({...rules, coordination:{...rules.coordination, agendarVisitas: !rules.coordination.agendarVisitas}})} className={cn("relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition", rules.coordination.agendarVisitas ? "bg-cyan-500" : "bg-slate-300")}><span className={cn("absolute size-4 rounded-full bg-white transition", rules.coordination.agendarVisitas ? "left-6" : "left-1")} /></button>
               </div>

@@ -26,7 +26,7 @@ export const STATUS_SLUG: Record<LeadStatus, string> = {
   "atendimento_humano": "atendimento-humano",
   em_followup: "em-followup",
   "escolhendo opcoes": "escolhendo-opcoes",
-  "visita agendada": "visita-agendada",
+  "reuniao agendada": "reuniao-agendada",
   negociando: "negociando",
   fechado: "fechado",
   "imovel necessidade": "imovel-necessidade",

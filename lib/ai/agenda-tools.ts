@@ -66,7 +66,7 @@ export async function consultarDisponibilidade(dias = 5): Promise<{ dia: string;
 }
 
 // Marca ou REMARCA (upsert por lead): se o lead já tem visita futura, atualiza
-// data/horário em vez de duplicar. Move para "visita agendada" + log + obs.
+// data/horário em vez de duplicar. Move para "reuniao agendada" + log + obs.
 export async function agendarOuRemarcar(params: {
   leadId: string
   data: string
@@ -105,7 +105,7 @@ export async function agendarOuRemarcar(params: {
       const obs = String((lead as { observacoes?: unknown } | null)?.observacoes ?? "")
       const linha = `📅 [${new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}] Visita ${acao} pela IA: ${dataBR} às ${horario.slice(0, 5)}.`
       await db().from("leads").update({
-        status: "visita agendada",
+        status: "reuniao agendada",
         observacoes: `${obs.trim()}\n${linha}`.trim().slice(-6000),
         atualizado_em: new Date().toISOString(),
       }).eq("id", leadId)

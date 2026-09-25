@@ -21,7 +21,7 @@ insert into public.pipeline_stages (key, label, variant, accent, ordem, visivel_
   ('atendimento_humano', 'Aguardando Atendimento', 'violet', '#7c3aed', 5, true, true),
   ('em_followup', 'Em Follow-up', 'orange', '#f97316', 6, false, true),
   ('escolhendo opcoes', 'Separando Opções', 'slate', '#54595f', 7, true, true),
-  ('visita agendada', 'Visita Agendada', 'amber', '#f59e0b', 8, true, true),
+  ('reuniao agendada', 'Reunião Agendada', 'amber', '#f59e0b', 8, true, true),
   ('negociando', 'Negociando', 'accent', '#b22222', 9, true, true),
   ('fechado', 'Fechado', 'green', '#16a34a', 10, true, true),
   ('imovel necessidade', 'Imóvel - Necessidade', 'teal', '#0d9488', 11, true, true),

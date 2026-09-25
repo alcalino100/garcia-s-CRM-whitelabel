@@ -81,7 +81,7 @@ export default function AuditoriaPage() {
     const dias = Math.floor((Date.now() - +new Date(l.atualizadoEm)) / 86400000)
     if (!["fechado", "perdido"].includes(l.status) && dias >= DIAS_PARADO) out.push(`Parado há ${dias} dias`)
     const leadVisits = visits.filter((v) => v.leadId === l.id)
-    if (leadVisits.length > 0 && l.status === "visita agendada" && dias >= 3) out.push("Visita sem retorno")
+    if (leadVisits.length > 0 && l.status === "reuniao agendada" && dias >= 3) out.push("Reunião sem retorno")
     if (l.status === "negociando" && dias >= DIAS_PARADO) out.push("Proposta sem atualização")
     return out
   }

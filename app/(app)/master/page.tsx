@@ -463,6 +463,7 @@ function PipelinesSection() {
 
   const set = (key: string, patch: Partial<StageRow>) =>
     setRows((rs) => rs.map((r) => (r.key === key ? { ...r, ...patch } : r)))
+  const [aberta, setAberta] = useState<string | null>(null)
 
   return (
     <Card>
@@ -474,28 +475,52 @@ function PipelinesSection() {
           </p>
         )}
         <p className="mb-2 text-xs text-muted-foreground">Chaves nunca mudam (automações dependem delas). Salvar recarrega para aplicar em todas as telas.</p>
-        <Table>
-          <THead><TR><TH>Chave</TH><TH>Rótulo</TH><TH>Cor</TH><TH>Variante</TH><TH>Ordem</TH><TH>Corretor vê</TH><TH>Ativa</TH><TH>Leads</TH><TH></TH></TR></THead>
-          <tbody>
-            {rows.map((r) => (
-              <TR key={r.key}>
-                <TD className="font-mono text-[11px]">{r.key}</TD>
-                <TD><Input value={r.label} onChange={(e) => set(r.key, { label: e.target.value })} className="h-8 min-w-36 text-xs" /></TD>
-                <TD><input type="color" value={r.accent} onChange={(e) => set(r.key, { accent: e.target.value })} className="h-8 w-10 cursor-pointer rounded border border-input bg-background" /></TD>
-                <TD>
-                  <Select value={r.variant} onChange={(e) => set(r.key, { variant: e.target.value })} className="h-8 text-xs">
-                    {VARIANTS.map((v) => <option key={v} value={v}>{v}</option>)}
-                  </Select>
-                </TD>
-                <TD><Input type="number" value={r.ordem} onChange={(e) => set(r.key, { ordem: Number(e.target.value) })} className="h-8 w-16 text-xs" /></TD>
-                <TD><input type="checkbox" checked={r.visivel_corretor} onChange={(e) => set(r.key, { visivel_corretor: e.target.checked })} className="size-4" /></TD>
-                <TD><input type="checkbox" checked={r.ativo} onChange={(e) => set(r.key, { ativo: e.target.checked })} className="size-4" /></TD>
-                <TD>{counts[r.key] === undefined ? "…" : counts[r.key] < 0 ? "?" : counts[r.key]}</TD>
-                <TD><button type="button" disabled={saving === r.key} onClick={() => salvar(r)} className={btn(true)}>Salvar</button></TD>
-              </TR>
-            ))}
-          </tbody>
-        </Table>
+        <div className="flex flex-col gap-2">
+          {rows.map((r) => {
+            const open = aberta === r.key
+            const n = counts[r.key]
+            return (
+              <div key={r.key} className="rounded-xl border border-border">
+                <button type="button" onClick={() => setAberta(open ? null : r.key)}
+                  className="flex w-full items-center gap-3 px-3 py-2.5 text-left">
+                  <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: r.accent }} aria-hidden />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-semibold">{r.label}</span>
+                    <span className="block font-mono text-[11px] text-muted-foreground">{r.key} · ordem {r.ordem}</span>
+                  </span>
+                  <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-semibold tabular-nums">
+                    {n === undefined ? "…" : n < 0 ? "?" : n}
+                  </span>
+                  <span className="flex gap-1 text-[11px]">
+                    {!r.visivel_corretor && <span className="rounded-full border border-border px-1.5 py-0.5 text-muted-foreground">gestor</span>}
+                    {!r.ativo && <span className="rounded-full border border-dashed border-border px-1.5 py-0.5 text-muted-foreground">off</span>}
+                  </span>
+                  <span className="text-muted-foreground">{open ? "▾" : "▸"}</span>
+                </button>
+                {open && (
+                  <div className="grid gap-2 border-t border-border p-3 sm:grid-cols-2">
+                    <div className="grid gap-1.5"><Label>Rótulo</Label>
+                      <Input value={r.label} onChange={(e) => set(r.key, { label: e.target.value })} className="h-8 text-xs" /></div>
+                    <div className="grid gap-1.5"><Label>Ordem</Label>
+                      <Input type="number" value={r.ordem} onChange={(e) => set(r.key, { ordem: Number(e.target.value) })} className="h-8 text-xs" /></div>
+                    <div className="grid gap-1.5"><Label>Cor</Label>
+                      <div className="flex items-center gap-2">
+                        <input type="color" value={r.accent} onChange={(e) => set(r.key, { accent: e.target.value })} className="h-8 w-10 cursor-pointer rounded border border-input bg-background" />
+                        <Select value={r.variant} onChange={(e) => set(r.key, { variant: e.target.value })} className="h-8 text-xs">
+                          {VARIANTS.map((v) => <option key={v} value={v}>{v}</option>)}
+                        </Select>
+                      </div></div>
+                    <div className="flex items-end gap-4 pb-1">
+                      <label className="flex items-center gap-1.5 text-xs"><input type="checkbox" checked={r.visivel_corretor} onChange={(e) => set(r.key, { visivel_corretor: e.target.checked })} className="size-4" /> Corretor vê</label>
+                      <label className="flex items-center gap-1.5 text-xs"><input type="checkbox" checked={r.ativo} onChange={(e) => set(r.key, { ativo: e.target.checked })} className="size-4" /> Ativa</label>
+                      <button type="button" disabled={saving === r.key} onClick={() => salvar(r)} className={btn(true)}>Salvar</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
       </CardContent>
     </Card>
   )
